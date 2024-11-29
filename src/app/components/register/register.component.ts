@@ -24,11 +24,11 @@ export class RegisterComponent {
           Swal.fire('Usuer Registered!!', response.msg, 'success')
           this.router.navigate(['/login'])
         } else {
-          Swal.fire('Ups!! error', response.error.msg, 'error')
+          Swal.fire('Algo salió mal en el backend', response.error.msg, 'error')
         }
       },
       error => {
-        Swal.fire('Ups!! error', error.error.msg, 'error')
+        Swal.fire('Hubo un error al hacer la petición', error.error.msg, 'error')
       }
     )
   }
