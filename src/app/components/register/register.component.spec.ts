@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RegisterComponent } from "./register.component"
 import { AuthService } from "../../services/auth.service";
 import { Router } from "@angular/router";
-import { of } from "rxjs";
+import { of, throwError } from "rxjs";
 import Swal from "sweetalert2";
 
 describe('RegisterComponent Test', ()=>{
@@ -52,4 +52,27 @@ describe('RegisterComponent Test', ()=>{
         // Verifica que si se navegó correctamente hacia la URL de login luego de registrarse
         expect(routerSpy.navigate).toHaveBeenCalledWith(['/login']);
     })
+
+    it('Debería manejar el error al tener un response.ok en false desde el auth service en el register component', ()=>{
+        // Arrange
+        const mockErrorResponse = {ok: false, error: {msg: 'Error email ya registrado'}};
+        authServiceSpy.register.and.returnValue(of(mockErrorResponse));
+        // Act
+        component.onSubmit(new Event('submit'));
+        // Assert
+        expect(Swal.isVisible()).toBeTrue();
+        expect(Swal.getTitle()?.textContent).toBe('Algo salió mal en el backend');
+    })
+
+    it('Debería manejar errores inesperados al hacer el llamado de la api (del servicio)', ()=>{
+        // Arrange
+        const mockFailResponse = {error:{msg:'Internal Server Error'}};
+        authServiceSpy.register.and.returnValue(throwError(mockFailResponse));
+        // Act 
+        component.onSubmit(new Event('submit'));
+        // Assert
+        expect(Swal.isVisible()).toBeTrue();
+        expect(Swal.getTitle()?.textContent).toBe('Hubo un error al hacer la petición');
+    })    
+
 })

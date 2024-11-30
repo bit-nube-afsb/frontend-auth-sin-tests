@@ -24,6 +24,7 @@ export class RegisterComponent {
           Swal.fire('Usuer Registered!!', response.msg, 'success')
           this.router.navigate(['/login'])
         } else {
+          // Error de validación, error de acceso de datos en el backend, que el registro ya exista
           Swal.fire('Algo salió mal en el backend', response.error.msg, 'error')
         }
       },
